@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test</title>
+<meta name="google-signin-scope" content="profile email https://mail.google.com/">
+<meta name="google-signin-client_id" content="441689445364-62bigpadlctn2kvl0c377hm2oqdjqpfo.apps.googleusercontent.com">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+<body>
+	<div id="sign-in-div">
+		<div class="g-signin2" data-onsuccess="onSignIn"></div>
+	</div>
+	<div id="send-email-div">
+	<form action="javascript:sendEmail()">
+		To Email: <input type="email" id="to-mail"/>
+		Subject:  <input type="text" id="subject"/>
+		Content:  <input type="text" id="content"/>
+		<input type="submit" value="Submit">
+	</form>
+
+	</div>
+	
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#send-email-div").hide();
+	});
+	
+	function onSignIn(googleUser) {
+		  var profile = googleUser.getAuthResponse(true);
+		  console.log(JSON.stringify(profile));
+		  $.ajax({
+			  url: "http://localhost:8080/GoogleEmailText/user/login.do",
+			  type: 'GET',
+			  data: {
+				  idToken: profile.id_token,
+				  accessToken: profile.access_token
+			  },
+			  success: function(data) {
+				//called when successful
+				if(data == "success") {
+					$("#sign-in-div").hide();
+					$("#send-email-div").show();
+				}
+					
+			  },
+			  error: function(e) {
+				//called when there is an error
+				//console.log(e.message);
+			  }
+			});
+	}
+	
+    function onFailure(error) {
+        console.log(error);
+      }
+    
+	function sendEmail() {
+		  $.ajax({
+			  url: "http://localhost:8080/GoogleEmailText/user/sendEmail.do",
+			  type: 'GET',
+			  data: {
+				  toEmail: $("#to-mail").val(),
+				  subject: $("#subject").val(),
+				  content: $("#content").val(),
+			  },
+			  success: function(data) {
+				console.log(data);
+				//called when successful
+				if(data == "success") {
+					$("#sign-in-div").hide();
+					$("#send-email-div").show();
+					alert("Sent email successfully!");
+				}
+					
+			  },
+			  error: function(e) {
+				  alert(e);
+			  }
+			});
+	}
+
+	</script>
+	
+</body>
+</html>
