@@ -36,7 +36,7 @@ public class UserController {
 	@RequestMapping(value="login.do")
 	public @ResponseBody String login(String idToken, String accessToken, HttpServletRequest request) {
 		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
-	    .setAudience(Arrays.asList("441689445364-62bigpadlctn2kvl0c377hm2oqdjqpfo.apps.googleusercontent.com"))
+	    .setAudience(Arrays.asList("clientid"))
 	    .setIssuer("accounts.google.com")
 	    .build();
 		try {
